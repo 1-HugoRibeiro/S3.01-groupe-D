@@ -1,1 +1,61 @@
+# Déclaration des services (conteneurs) du projet
+services:
 
+  # Service web : PHP et serveur Apache2
+  web:
+    # Construction de l'image Docker à partir du Dockerfile
+    build:
+      context: .                    # Utilise la racine du projet
+      dockerfile: docker/Dockerfile # Emplacement du Dockerfile
+
+    # Redirection du port 8080 de Windows vers le port 80 d'Apache
+    ports:
+      - "8080:80"
+
+    # Partage les fichiers du projet avec le conteneur
+    # Les modifications dans VS Code sont visibles dans le conteneur
+    volumes:
+      - ./:/var/www/html
+
+    # Démarre le conteneur MariaDB avant le conteneur web
+    depends_on:
+      - db
+
+  # Service de base de données : MariaDB
+  db:
+    # Image officielle de MariaDB
+    image: mariadb:11.4
+
+    # Paramètres de création et de connexion à la base de données
+    # Les valeurs sont récupérées dans le fichier .env
+    environment:
+      MARIADB_DATABASE: ${DB_NAME}               # Nom de la base
+      MARIADB_USER: ${DB_USER}                   # Utilisateur de la base
+      MARIADB_PASSWORD: ${DB_PASSWORD}           # Mot de passe utilisateur
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD} # Mot de passe administrateur
+
+    # Stockage persistant des données MariaDB
+    # Les données restent enregistrées après l'arrêt des conteneurs
+    volumes:
+      - db_data:/var/lib/mysql
+
+  # Service Adminer : interface web d'administration de MariaDB
+  adminer:
+    # Image officielle d'Adminer
+    image: adminer:latest
+
+    # Adminer sera accessible sur http://localhost:8081
+    ports:
+      - "8081:8080"
+
+    # Indique à Adminer le nom du serveur MariaDB
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+
+    # Démarre MariaDB avant Adminer
+    depends_on:
+      - db
+
+# Déclaration du volume Docker utilisé pour conserver la base de données
+volumes:
+  db_data:
