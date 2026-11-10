@@ -1,1 +1,24 @@
+# Fichiers IMDb volumineux
+database/imports/
+*.tsv
+*.tsv.gz
 
+# Mots de passe et configuration locale
+.env
+.env.*
+
+# Fichiers temporaires
+*.tmp
+*.log
+*.bak
+
+# Fichiers Windows
+Thumbs.db
+Desktop.ini
+
+# Fichiers de développement
+.vscode/
+.idea/
+
+# Données locales Docker
+docker_data.vhdx

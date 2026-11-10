@@ -16,6 +16,7 @@ services:
     # Les modifications dans VS Code sont visibles dans le conteneur
     volumes:
       - ./:/var/www/html
+      
 
     # Démarre le conteneur MariaDB avant le conteneur web
     depends_on:
@@ -38,6 +39,7 @@ services:
     # Les données restent enregistrées après l'arrêt des conteneurs
     volumes:
       - db_data:/var/lib/mysql
+      - ./database/imports:/var/lib/mysql-files:ro
 
   # Service Adminer : interface web d'administration de MariaDB
   adminer:
